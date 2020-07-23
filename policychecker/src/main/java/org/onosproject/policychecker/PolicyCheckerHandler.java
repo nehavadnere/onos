@@ -31,9 +31,6 @@ import org.onosproject.net.flow.DefaultTrafficTreatment;
 import org.onosproject.net.flow.FlowRuleService;
 import org.onosproject.net.flow.TrafficSelector;
 import org.onosproject.net.flow.TrafficTreatment;
-import org.onosproject.net.flowobjective.DefaultForwardingObjective;
-import org.onosproject.net.flowobjective.FlowObjectiveService;
-import org.onosproject.net.flowobjective.ForwardingObjective;
 import org.onosproject.net.host.HostService;
 import org.onosproject.net.intent.HostToHostIntent;
 import org.onosproject.net.intent.IntentService;
@@ -49,12 +46,17 @@ import org.onosproject.net.packet.PacketService;
 import org.onosproject.net.topology.TopologyService;
 import org.slf4j.Logger;
 
+import java.util.*;
 import java.util.EnumSet;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * WORK-IN-PROGRESS: Sample reactive forwarding application using intent framework.
+ * WORK-IN-PROGRESS: Policy Checker Handler for verifying flowrules.
  */
 @Component(immediate = true)
 public class PolicyCheckerHandler {
@@ -79,15 +81,64 @@ public class PolicyCheckerHandler {
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected FlowRuleService flowRuleService;
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
-    protected FlowObjectiveService flowObjectiveService;
 
     private ApplicationId appId;
+    
+	public PolicyCheckerHandler() {
+    }
 
+    public PolicyCheckerHandler(ApplicationId appId) {
+      this.appId = appId;
+    }
+
+    public class Parser {
+    	private ApplicationId appId;
+        List<String> rules = new ArrayList<>();
+        private static final String FILE_NAME = "/src/main/resource/org/onosproject/policychecker/resource/rules.txt";
+
+		public Parser() {
+		}
+
+		public Parser(ApplicationId appId) {
+			this.appId = appId;
+			this.rules = rules;
+	        loadFile();
+		}
+
+    private void loadFile() {
+        String relativelyPath = System.getProperty("user.dir");
+        File ruleFile = new File(relativelyPath + FILE_NAME);
+        BufferedReader br = null;
+        try {
+            FileReader in = new FileReader(ruleFile);
+            br = new BufferedReader(in);
+            int i = 0;
+            String icmd = "";
+            while ((icmd = br.readLine()) != null) {
+                rules.add(icmd);
+            }
+        } catch (IOException e) {
+            log.info("file does not exist.");
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    log.info("nothing");
+                }
+            }
+        }
+        System.out.println("rules = " + rules);
+    }
+
+    }
 
     @Activate
     public void activate() {
         appId = coreService.registerApplication("org.onosproject.policychecker");
+        PolicyCheckerHandler policycheckerhandler = new PolicyCheckerHandler(appId);
+        PolicyCheckerHandler.Parser parser = policycheckerhandler.new Parser(appId);
+		    parser.loadFile();
 
         //packetService.addProcessor(processor, PacketProcessor.director(2));
 
