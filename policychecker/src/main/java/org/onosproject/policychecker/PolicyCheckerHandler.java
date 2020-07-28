@@ -61,7 +61,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component(immediate = true)
 public class PolicyCheckerHandler {
 
-    private final Logger log = getLogger(getClass());
+    //private final Logger log = getLogger(getClass());
+    private static final Logger log = getLogger(PolicyCheckerHandler.class);
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected CoreService coreService;
@@ -95,17 +96,19 @@ public class PolicyCheckerHandler {
     	private ApplicationId appId;
         List<String> rules = new ArrayList<>();
         private static final String FILE_NAME = "/src/main/resource/org/onosproject/policychecker/resource/rules.txt";
+		private final Logger log_p = getLogger(Parser.class);
 
 		public Parser() {
 		}
 
 		public Parser(ApplicationId appId) {
 			this.appId = appId;
-			this.rules = rules;
-	        loadFile();
+			//this.rules = rules;
+	    loadFile();
 		}
 
     private void loadFile() {
+        log_p.info("load file module ");
         String relativelyPath = System.getProperty("user.dir");
         File ruleFile = new File(relativelyPath + FILE_NAME);
         BufferedReader br = null;
@@ -118,17 +121,17 @@ public class PolicyCheckerHandler {
                 rules.add(icmd);
             }
         } catch (IOException e) {
-            log.info("file does not exist.");
+            log_p.info("file does not exist.");
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    log.info("nothing");
+                    log_p.info("nothing");
                 }
             }
         }
-        System.out.println("rules = " + rules);
+        log_p.info("rules = " + rules);
     }
 
     }
@@ -138,7 +141,8 @@ public class PolicyCheckerHandler {
         appId = coreService.registerApplication("org.onosproject.policychecker");
         PolicyCheckerHandler policycheckerhandler = new PolicyCheckerHandler(appId);
         PolicyCheckerHandler.Parser parser = policycheckerhandler.new Parser(appId);
-		    parser.loadFile();
+		log.debug("NEHA: activated");
+		parser.loadFile();
 
         //packetService.addProcessor(processor, PacketProcessor.director(2));
 

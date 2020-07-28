@@ -1,1 +1,1 @@
-add-host-intent <h1> <h2>
+add-host-intent 00:00:00:00:00:01/None 00:00:00:00:00:02/None
