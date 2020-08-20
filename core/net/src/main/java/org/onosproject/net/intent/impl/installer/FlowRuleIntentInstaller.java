@@ -70,6 +70,8 @@ import static org.onosproject.net.intent.IntentState.REALLOCATING;
 import static org.onosproject.net.intent.constraint.NonDisruptiveConstraint.requireNonDisruptive;
 import static org.slf4j.LoggerFactory.getLogger;
 
+
+//import org.onosproject.net.intent.PolicyChecker;
 /**
  * Installer for FlowRuleIntent.
  */
@@ -143,6 +145,7 @@ public class FlowRuleIntentInstaller implements IntentInstaller<FlowRuleIntent> 
 
     @Override
     public void apply(IntentOperationContext<FlowRuleIntent> context) {
+		boolean isConflict = false;
         Optional<IntentData> toUninstall = context.toUninstall();
         Optional<IntentData> toInstall = context.toInstall();
 
@@ -189,6 +192,16 @@ public class FlowRuleIntentInstaller implements IntentInstaller<FlowRuleIntent> 
                     .map(FlowRuleIntent::flowRules)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toList());
+			//NEHA: call policy conflict here
+			//PolicyChecker pc = new PolicyChecker();
+			//isConflict = pc.policyCheckerHandler(flowRulesToInstall);
+			isConflict = policyCheckerHandler(flowRulesToInstall);
+            log.info("NEHA : Apply policy conflicts check here ...");
+            //if (isConflict) {
+            //        log.info("NEHA: If policies conflicts, break the loop");
+            //        return;
+            //}
+
         } else {
             // No flow rules to be installed.
             flowRulesToInstall = Collections.emptyList();
@@ -250,6 +263,9 @@ public class FlowRuleIntentInstaller implements IntentInstaller<FlowRuleIntent> 
         flowRuleService.apply(operations);
     }
 
+	private boolean policyCheckerHandler(List<FlowRule> flowRulesToInstall) {
+		return false;
+	}
     private void reallocate(IntentOperationContext<FlowRuleIntent> context) {
 
         Optional<IntentData> toUninstall = context.toUninstall();

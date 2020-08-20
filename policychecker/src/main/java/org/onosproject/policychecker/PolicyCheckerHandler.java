@@ -61,8 +61,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Component(immediate = true)
 public class PolicyCheckerHandler {
 
-    //private final Logger log = getLogger(getClass());
-    private static final Logger log = getLogger(PolicyCheckerHandler.class);
+    private final Logger log = getLogger(getClass());
+    //private static final Logger log = getLogger(PolicyCheckerHandler.class);
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY_UNARY)
     protected CoreService coreService;
@@ -84,6 +84,8 @@ public class PolicyCheckerHandler {
 
 
     private ApplicationId appId;
+    List<String> rules = new ArrayList<>();
+    private static final String FILE_NAME = "/src/main/resource/org/onosproject/policychecker/resource/rules.txt";
     
 	public PolicyCheckerHandler() {
     }
@@ -92,24 +94,8 @@ public class PolicyCheckerHandler {
       this.appId = appId;
     }
 
-    public class Parser {
-		private ApplicationId appId;
-        List<String> rules = new ArrayList<>();
-        private static final String FILE_NAME = "/src/main/resource/org/onosproject/policychecker/resource/rules.txt";
-		private final Logger log_p = getLogger(Parser.class);
-
-		public Parser() {
-			loadFile();
-		}
-
-		public Parser(ApplicationId appId) {
-			this.appId = appId;
-			//this.rules = rules;
-			loadFile();
-		}
-
     private void loadFile() {
-        log_p.info("load file module ");
+        log.info("load file module ");
         String relativelyPath = System.getProperty("user.dir");
         File ruleFile = new File(relativelyPath + FILE_NAME);
         BufferedReader br = null;
@@ -122,17 +108,17 @@ public class PolicyCheckerHandler {
                 rules.add(icmd);
             }
         } catch (IOException e) {
-            log_p.info("file does not exist.");
+            log.info("file does not exist.");
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    log_p.info("nothing");
+                    log.info("nothing");
                 }
             }
         }
-        log_p.info("rules = " + rules);
+        log.info("rules = " + rules);
 		intentMapper(rules);
     }
 
@@ -144,9 +130,9 @@ public class PolicyCheckerHandler {
 			if (str[0].equals("add-host-intent"))
 				createHostIntent(str[1], str[2]);
 			else if (str[0].equals("add-point-intent"))
-				log_p.info("point intent");
+				log.info("point intent");
 			else
-				log_p.error("intent type unknown.");
+				log.error("intent type unknown.");
             }
         } //end of intentMapper
 
@@ -187,19 +173,17 @@ public class PolicyCheckerHandler {
         intentService.submit(hostIntent);
 
 
-        log_p.info("Host to Host intent submitted:\n%s", intent.toString());
+        log.info("Host to Host intent submitted:\n%s", intent.toString());
 
 	}// end of create_intent
 
-	} // End of Parser class
 
     @Activate
     public void activate() {
         appId = coreService.registerApplication("org.onosproject.policychecker");
         PolicyCheckerHandler policycheckerhandler = new PolicyCheckerHandler(appId);
-        PolicyCheckerHandler.Parser parser = policycheckerhandler.new Parser(appId);
-		log.debug("NEHA: activated");
-		parser.loadFile();
+		log.info("NEHA: activated");
+		loadFile();
 
         //packetService.addProcessor(processor, PacketProcessor.director(2));
 
@@ -215,5 +199,6 @@ public class PolicyCheckerHandler {
         //packetService.removeProcessor(processor);
         //processor = null;
         log.info("Stopped");
-    }
+    
+}
 }
