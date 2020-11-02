@@ -70,6 +70,18 @@ import static org.onosproject.net.intent.IntentState.REALLOCATING;
 import static org.onosproject.net.intent.constraint.NonDisruptiveConstraint.requireNonDisruptive;
 import static org.slf4j.LoggerFactory.getLogger;
 
+//NEHA imports
+import org.onosproject.net.flow.FlowEntry;
+//import org.onosproject.core.ApplicationId;
+//import org.onosproject.core.CoreService;
+import java.util.function.Predicate;
+import java.util.HashMap;
+import org.onosproject.net.PortNumber;
+import org.onosproject.net.flow.instructions.Instruction;
+import org.onosproject.net.flow.instructions.Instructions;
+import org.onosproject.net.flow.instructions.Instructions.OutputInstruction;
+import static org.onosproject.net.flow.instructions.Instruction.Type.OUTPUT;
+import static org.onosproject.net.PortNumber.CONTROLLER;
 
 //import org.onosproject.net.intent.PolicyChecker;
 /**
@@ -264,8 +276,57 @@ public class FlowRuleIntentInstaller implements IntentInstaller<FlowRuleIntent> 
     }
 
 	private boolean policyCheckerHandler(List<FlowRule> flowRulesToInstall) {
+		Predicate<FlowEntry> TRUE_PREDICATE = f -> true;
+		Predicate<FlowEntry> predicate = TRUE_PREDICATE;
+		List<FlowEntry> rules1;
+		rules1 = Lists.newArrayList();
+		HashMap<String,Integer> map = new HashMap<>();
+		for(FlowRule flowRule : flowRulesToInstall) {
+			//List<FlowEntry> rules1;
+			if (predicate.equals(TRUE_PREDICATE)) {
+				//rules1 = Lists.newArrayList();
+				for(FlowEntry f1 : flowRuleService.getFlowEntries(flowRule.deviceId())) {
+					if (predicate.test(f1)) {
+						//if(rules1.isEmpty()) {
+						//	map.put(f1.id().toString(),1);
+                    	//	rules1.add(f1);
+						//	log.info("**rule1 EMPTY | id = "+f1.id());
+						//}
+						// Handle only non-duplicate entries
+						//else if(!rules1.isEmpty() && !map.containsKey(f1.id().toString())) {
+						if(!map.containsKey(f1.id().toString())) {
+							map.put(f1.id().toString(),1);
+							Instruction instruction = f1.treatment().allInstructions().get(0);
+							OutputInstruction outInstruction = (OutputInstruction) instruction; 
+							PortNumber port = ((OutputInstruction) instruction).port();
+							log.info("**ANYWAY | id = "+f1.id());
+							if(f1.treatment().allInstructions().get(0).type()==OUTPUT) {
+								if (!port.equals(CONTROLLER) && f1.id().toString().startsWith("100")) {
+                    				rules1.add(f1);
+									log.info("**NEW RULE | id = "+f1.id());
+								}
+							}
+						}
+					}
+
+				}
+            }
+			else {
+				//rules1 = Lists.newArrayList();
+				for(FlowEntry f1 : flowRuleService.getFlowEntries(flowRule.deviceId())) {
+					if (predicate.test(f1)) {
+                    	rules1.add(f1);
+						log.info("**FALSE P | id = "+f1.id());
+					}
+			}
+		}
+	    }    
+		for (FlowEntry rule1: rules1) {
+			log.info("NEHA ...deviceId "+rule1.deviceId()+ ",flowRule "+rule1.id()+", selector "+rule1.selector()+", treatment  " + rule1.treatment()+ "State "+rule1.state());
+		}
 		return false;
 	}
+
     private void reallocate(IntentOperationContext<FlowRuleIntent> context) {
 
         Optional<IntentData> toUninstall = context.toUninstall();

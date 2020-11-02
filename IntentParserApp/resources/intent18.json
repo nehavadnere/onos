@@ -1,0 +1,186 @@
+{
+    "$loki": 18,
+    "appId": "org.onosproject.cli",
+    "id": "0x64",
+    "meta": {
+        "created": 1599753618423,
+        "revision": 0,
+        "version": 0
+    },
+    "mi_id": "md1_m2_i64",
+    "paths": [
+        [
+            {
+                "appId": "org.onosproject.net.intent",
+                "bytes": 0,
+                "deviceId": "of:0000000000000001",
+                "groupId": 0,
+                "id": "52917297248793039",
+                "isPermanent": true,
+                "lastSeen": 1599753617414,
+                "life": 0,
+                "liveType": "UNKNOWN",
+                "packets": 0,
+                "priority": 100,
+                "selector": {
+                    "criteria": [
+                        {
+                            "port": 3,
+                            "type": "IN_PORT"
+                        },
+                        {
+                            "mac": "00:16:3E:EA:80:5F",
+                            "type": "ETH_DST"
+                        },
+                        {
+                            "mac": "00:16:3E:4A:A4:4F",
+                            "type": "ETH_SRC"
+                        }
+                    ]
+                },
+                "state": "PENDING_ADD",
+                "tableId": 0,
+                "tableName": "0",
+                "timeout": 0,
+                "treatment": {
+                    "deferred": [],
+                    "instructions": [
+                        {
+                            "port": "1",
+                            "type": "OUTPUT"
+                        }
+                    ]
+                }
+            },
+            {
+                "appId": "org.onosproject.net.intent",
+                "bytes": 0,
+                "deviceId": "of:0000000000000002",
+                "groupId": 0,
+                "id": "52917295636795137",
+                "isPermanent": true,
+                "lastSeen": 1599753617414,
+                "life": 0,
+                "liveType": "UNKNOWN",
+                "packets": 0,
+                "priority": 100,
+                "selector": {
+                    "criteria": [
+                        {
+                            "port": 1,
+                            "type": "IN_PORT"
+                        },
+                        {
+                            "mac": "00:16:3E:EA:80:5F",
+                            "type": "ETH_DST"
+                        },
+                        {
+                            "mac": "00:16:3E:4A:A4:4F",
+                            "type": "ETH_SRC"
+                        }
+                    ]
+                },
+                "state": "PENDING_ADD",
+                "tableId": 0,
+                "tableName": "0",
+                "timeout": 0,
+                "treatment": {
+                    "deferred": [],
+                    "instructions": [
+                        {
+                            "port": "3",
+                            "type": "OUTPUT"
+                        }
+                    ]
+                }
+            }
+        ],
+        [
+            {
+                "appId": "org.onosproject.net.intent",
+                "bytes": 0,
+                "deviceId": "of:0000000000000001",
+                "groupId": 0,
+                "id": "52917297415958138",
+                "isPermanent": true,
+                "lastSeen": 1599753617414,
+                "life": 0,
+                "liveType": "UNKNOWN",
+                "packets": 0,
+                "priority": 100,
+                "selector": {
+                    "criteria": [
+                        {
+                            "port": 1,
+                            "type": "IN_PORT"
+                        },
+                        {
+                            "mac": "00:16:3E:4A:A4:4F",
+                            "type": "ETH_DST"
+                        },
+                        {
+                            "mac": "00:16:3E:EA:80:5F",
+                            "type": "ETH_SRC"
+                        }
+                    ]
+                },
+                "state": "PENDING_ADD",
+                "tableId": 0,
+                "tableName": "0",
+                "timeout": 0,
+                "treatment": {
+                    "deferred": [],
+                    "instructions": [
+                        {
+                            "port": "3",
+                            "type": "OUTPUT"
+                        }
+                    ]
+                }
+            },
+            {
+                "appId": "org.onosproject.net.intent",
+                "bytes": 0,
+                "deviceId": "of:0000000000000002",
+                "groupId": 0,
+                "id": "52917295813737547",
+                "isPermanent": true,
+                "lastSeen": 1599753617414,
+                "life": 0,
+                "liveType": "UNKNOWN",
+                "packets": 0,
+                "priority": 100,
+                "selector": {
+                    "criteria": [
+                        {
+                            "port": 3,
+                            "type": "IN_PORT"
+                        },
+                        {
+                            "mac": "00:16:3E:4A:A4:4F",
+                            "type": "ETH_DST"
+                        },
+                        {
+                            "mac": "00:16:3E:EA:80:5F",
+                            "type": "ETH_SRC"
+                        }
+                    ]
+                },
+                "state": "PENDING_ADD",
+                "tableId": 0,
+                "tableName": "0",
+                "timeout": 0,
+                "treatment": {
+                    "deferred": [],
+                    "instructions": [
+                        {
+                            "port": "1",
+                            "type": "OUTPUT"
+                        }
+                    ]
+                }
+            }
+        ]
+    ],
+    "type": "HostToHostIntent"
+}

@@ -123,7 +123,7 @@ public class FlowsListCommand extends AbstractShellCommand {
         FlowRuleService service = get(FlowRuleService.class);
         contentFilter = new StringFilter(filter, StringFilter.Strategy.AND);
 
-        compilePredicate();
+        //compilePredicate();
 
         if (countOnly && !suppressCoreOutput && filter.isEmpty() && remove == null) {
             if (state == null && uri == null) {
@@ -217,12 +217,15 @@ public class FlowsListCommand extends AbstractShellCommand {
      * arguments.
      */
     private void compilePredicate() {
+		log.info("NEHA... CompilePredicate state = "+state+ " table = "+table); 
         if (state != null && !state.equals(ANY)) {
+			log.info("NEHA... CompilePredicate state = "+state);
             final FlowEntryState feState = FlowEntryState.valueOf(state.toUpperCase());
             predicate = predicate.and(f -> f.state().equals(feState));
         }
 
         if (table != null) {
+			log.info("NEHA... CompilePredicate table = "+table);
             final int tableId = Integer.parseInt(table);
             predicate = predicate.and(f -> f.tableId() == tableId);
         }
@@ -265,8 +268,14 @@ public class FlowsListCommand extends AbstractShellCommand {
         }
 
         for (Device d : devices) {
+            log.info("NEHA... Predicate: " + predicate);
             if (predicate.equals(TRUE_PREDICATE)) {
-                rules = newArrayList(service.getFlowEntries(d.id()));
+                log.info("NEHA... True Predicate: " + predicate);
+				rules = newArrayList(service.getFlowEntries(d.id()));
+				log.info("NEHA... rules goes here");
+				for(FlowEntry f : rules) {
+                	log.info("NEHA... rule id = "+f.id());
+				}
             } else {
                 rules = newArrayList();
                 for (FlowEntry f : service.getFlowEntries(d.id())) {
